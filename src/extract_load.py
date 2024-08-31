@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 from pandas import DataFrame
 from yfinance import Ticker
+from sqlalchemy import Engine
 # pegar cotacao
 def get_data(ticker_name, periodo='5d', intervalo='1d') -> DataFrame:
     
@@ -21,7 +22,7 @@ def get_data(ticker_name, periodo='5d', intervalo='1d') -> DataFrame:
 def get_all_data_commodities(comm_names: list[str]) -> DataFrame:
     return pd.concat([get_data(comm_name) for comm_name in comm_names])
 
-def save_db(df: DataFrame, schema: str):
+def save_db(df: DataFrame, schema: str, engine: Engine):
     df.to_sql('commodities', engine, if_exists='replace', index=True, index_label='Date', schema=schema)
     
     return
@@ -39,11 +40,7 @@ if __name__ == "__main__":
     DB_SCHEMA = os.getenv("DB_SCHEMA_PROD")
     
     DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    
-    
-    print(DATABASE_URL)
     engine = create_engine(DATABASE_URL)
-    print(engine)
     
     commodities = ['CL=F', 'GC=F', 'SI=F']
     
@@ -51,9 +48,7 @@ if __name__ == "__main__":
     
     data_comm: DataFrame = get_all_data_commodities(comm_names=commodities)
     
-    print(data_comm)
-    
-    save_db(data_comm, schema)
+    save_db(data_comm, schema, engine)
     
     
         
