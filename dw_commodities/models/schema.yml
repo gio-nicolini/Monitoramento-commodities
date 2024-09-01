@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: dbcomm
+    schema: public
+    tables:
+      - name: commodities
+        description: "Tabela de dados historicos"
+        columns:
+          - name: Date
+            description: "Data da observacao"
+          - name: Close
+            description: "Valor de fechamento da commodity"
+          - name: ticker
+            description: "ticker da commodity"
